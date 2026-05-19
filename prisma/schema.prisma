@@ -18,6 +18,7 @@ model Case {
   updatedAt         DateTime? @updatedAt
   Patient           Patient? @relation(fields: [patientId], references: [id])
   patientId         String?
+  appointments      Appointment[]
 }
 
 model Patient {
@@ -31,5 +32,24 @@ model Patient {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime?  @updatedAt
 
-  cases Case[]
+  cases        Case[]
+  appointments Appointment[]
+}
+
+model Appointment {
+  id             String    @id @default(uuid())
+  title          String
+  description    String?
+  startTime      DateTime
+  endTime        DateTime
+  status         String    @default("Scheduled")
+  recurrenceRule String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime? @updatedAt
+  
+  Patient        Patient?  @relation(fields: [patientId], references: [id])
+  patientId      String
+  
+  Case           Case?     @relation(fields: [caseId], references: [id])
+  caseId         String?
 }

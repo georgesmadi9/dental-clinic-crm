@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { CalendarPlus } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
@@ -15,6 +18,7 @@ import {
 
 import Image from "next/image";
 
+import { AppointmentModal } from "@/app/components/AppointmentModal";
 import { SideBarUser } from "./SideBarUser";
 import { SideBarItem } from "./SideBarItem";
 
@@ -30,6 +34,11 @@ const sidebarItems = [
     icon: "User",
   },
   {
+    title: "Appointments",
+    url: "/appointments",
+    icon: "CalendarCheck",
+  },
+  {
     title: "Calendar",
     url: "/calendar",
     icon: "CalendarDays",
@@ -37,6 +46,12 @@ const sidebarItems = [
 ];
 
 export function AppSidebar() {
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
+
+  const handleScheduleAppointment = () => {
+    setIsAppointmentModalOpen(true);
+  };
+
   return (
     <Sidebar className="bg-white" collapsible="icon">
       <SidebarHeader className="flex flex-col items-center">
@@ -52,7 +67,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton>
+                <SidebarMenuButton onClick={handleScheduleAppointment}>
                   <CalendarPlus className="mr-2 shrink-0 scale-125" />
                   <span className="text-md font-semibold">Schedule Appointment</span>
                 </SidebarMenuButton>
@@ -76,6 +91,12 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarFooter>
+
+      {/* Appointment Modal */}
+      <AppointmentModal
+        open={isAppointmentModalOpen}
+        onOpenChange={setIsAppointmentModalOpen}
+      />
     </Sidebar>
   );
 }

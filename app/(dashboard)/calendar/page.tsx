@@ -12,9 +12,10 @@ import MonthView from "@/app/components/CalendarViews/MonthView";
 import WeekView from "@/app/components/CalendarViews/WeekView";
 import DayView from "@/app/components/CalendarViews/DayView";
 import ListView from "@/app/components/CalendarViews/ListView";
+import { AppointmentWithRelations } from "@/app/types/Appointment";
 
 const CalendarPage = () => {
-  const [appointments, setAppointments] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<AppointmentWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState<{
@@ -171,6 +172,47 @@ const CalendarPage = () => {
               </div>
             </div>
 
+            {/* Stats Summary */}
+            <div className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <p className="text-sm text-blue-600 font-semibold">
+                  Scheduled
+                </p>
+                <p className="text-2xl font-bold text-blue-900">
+                  {
+                    appointments.filter((apt) => apt.status === "Scheduled")
+                      .length
+                  }
+                </p>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <p className="text-sm text-green-600 font-semibold">
+                  Completed
+                </p>
+                <p className="text-2xl font-bold text-green-900">
+                  {
+                    appointments.filter((apt) => apt.status === "Completed")
+                      .length
+                  }
+                </p>
+              </div>
+              <div className="bg-red-50 p-4 rounded-lg">
+                <p className="text-sm text-red-600 font-semibold">Cancelled</p>
+                <p className="text-2xl font-bold text-red-900">
+                  {
+                    appointments.filter((apt) => apt.status === "Cancelled")
+                      .length
+                  }
+                </p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600 font-semibold">Total</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {appointments.length}
+                </p>
+              </div>
+            </div>
+
             {/* View Tabs */}
             <Tabs
               value={activeView}
@@ -218,47 +260,6 @@ const CalendarPage = () => {
                 <ListView appointments={appointments} />
               </TabsContent>
             </Tabs>
-
-            {/* Stats Summary */}
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="text-sm text-blue-600 font-semibold">
-                  Scheduled
-                </p>
-                <p className="text-2xl font-bold text-blue-900">
-                  {
-                    appointments.filter((apt) => apt.status === "Scheduled")
-                      .length
-                  }
-                </p>
-              </div>
-              <div className="bg-green-50 p-4 rounded-lg">
-                <p className="text-sm text-green-600 font-semibold">
-                  Completed
-                </p>
-                <p className="text-2xl font-bold text-green-900">
-                  {
-                    appointments.filter((apt) => apt.status === "Completed")
-                      .length
-                  }
-                </p>
-              </div>
-              <div className="bg-red-50 p-4 rounded-lg">
-                <p className="text-sm text-red-600 font-semibold">Cancelled</p>
-                <p className="text-2xl font-bold text-red-900">
-                  {
-                    appointments.filter((apt) => apt.status === "Cancelled")
-                      .length
-                  }
-                </p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600 font-semibold">Total</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {appointments.length}
-                </p>
-              </div>
-            </div>
           </>
         )}
       </div>

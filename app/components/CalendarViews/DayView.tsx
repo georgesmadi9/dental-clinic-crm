@@ -9,11 +9,12 @@ import {
   formatDayMonthDate,
   isToday,
 } from "@/app/lib/calendarUtils";
+import { AppointmentWithRelations } from "@/app/types/Appointment";
 import moment from "moment";
 
 interface DayViewProps {
   currentDate: Date;
-  appointments: any[];
+  appointments: AppointmentWithRelations[];
   onTimeSlotClick: (date: Date, hour: number) => void;
   onPreviousDay: () => void;
   onNextDay: () => void;

@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getUpcomingAppointments, getPastAppointments } from "@/app/lib/calendarUtils";
+import { AppointmentWithRelations } from "@/app/types/Appointment";
 import moment from "moment";
 import Link from "next/link";
 
 interface ListViewProps {
-  appointments: any[];
+  appointments: AppointmentWithRelations[];
 }
 
 const ListView: React.FC<ListViewProps> = ({ appointments }) => {

@@ -118,10 +118,10 @@ export function formatDayMonthDate(date: Date): string {
 /**
  * Get appointments for a specific day
  */
-export function getAppointmentsForDay(
-  appointments: any[],
+export function getAppointmentsForDay<T extends { startTime: Date | string }>(
+  appointments: T[],
   date: Date
-): any[] {
+): T[] {
   return appointments.filter((apt) => {
     const aptDate = new Date(apt.startTime);
     return isSameDay(aptDate, date);
@@ -131,11 +131,11 @@ export function getAppointmentsForDay(
 /**
  * Get appointments for a specific time slot
  */
-export function getAppointmentsForTimeSlot(
-  appointments: any[],
+export function getAppointmentsForTimeSlot<T extends { startTime: Date | string; endTime: Date | string }>(
+  appointments: T[],
   date: Date,
   hour: number
-): any[] {
+): T[] {
   return appointments.filter((apt) => {
     const aptStart = new Date(apt.startTime);
     const aptEnd = new Date(apt.endTime);
@@ -185,7 +185,7 @@ export function calculateAppointmentPosition(
 /**
  * Get upcoming appointments (future from now)
  */
-export function getUpcomingAppointments(appointments: any[]): any[] {
+export function getUpcomingAppointments<T extends { startTime: Date | string }>(appointments: T[]): T[] {
   const now = new Date();
   return appointments
     .filter((apt) => new Date(apt.startTime) >= now)
@@ -195,7 +195,7 @@ export function getUpcomingAppointments(appointments: any[]): any[] {
 /**
  * Get past appointments
  */
-export function getPastAppointments(appointments: any[]): any[] {
+export function getPastAppointments<T extends { startTime: Date | string; endTime: Date | string }>(appointments: T[]): T[] {
   const now = new Date();
   return appointments
     .filter((apt) => new Date(apt.endTime) < now)

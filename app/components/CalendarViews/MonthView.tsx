@@ -3,18 +3,18 @@
 import React from "react";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   getMonthGrid,
   formatMonthYear,
   isToday,
   getAppointmentsForDay,
 } from "@/app/lib/calendarUtils";
+import { AppointmentWithRelations } from "@/app/types/Appointment";
 import moment from "moment";
 
 interface MonthViewProps {
   currentDate: Date;
-  appointments: any[];
+  appointments: AppointmentWithRelations[];
   onDateClick: (date: Date) => void;
   onPreviousMonth: () => void;
   onNextMonth: () => void;

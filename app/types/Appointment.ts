@@ -23,3 +23,16 @@ export interface AppointmentWithPatient extends Appointment {
 export interface AppointmentWithDetails extends AppointmentWithPatient {
   case_title?: string; // Title of linked case if exists
 }
+
+// API response type with nested Patient and Case
+export interface AppointmentWithRelations extends Appointment {
+  Patient?: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
+  Case?: {
+    id: string;
+    title: string;
+  };
+}

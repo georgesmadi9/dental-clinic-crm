@@ -10,9 +10,10 @@ import {
 } from "@/components/ui/sidebar";
 
 // Map string names to LucideIcon components (example)
-import { CalendarDays, NotepadText, User } from "lucide-react";
+import { CalendarDays, CalendarCheck, NotepadText, User } from "lucide-react";
 const iconMap: Record<string, LucideIcon> = {
   CalendarDays,
+  CalendarCheck,
   NotepadText,
   User,
 };

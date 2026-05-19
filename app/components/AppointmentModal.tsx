@@ -9,7 +9,7 @@ import { User, FileText } from "lucide-react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import {
   Dialog,
   DialogContent,
@@ -103,6 +103,49 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
   // Fetch patients and cases for selectors
   useEffect(() => {
+    const fetchPatientsAndCases = async () => {
+      try {
+        const [patientsRes, casesRes] = await Promise.all([
+          fetch("/api/patients"),
+          fetch("/api/cases"),
+        ]);
+
+        const patientsData = await patientsRes.json();
+        const casesData = await casesRes.json();
+
+        setPatients(patientsData);
+        setCases(casesData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Failed to load patients and cases");
+      }
+    };
+
+    const fetchAppointmentData = async () => {
+      setLoadingData(true);
+      try {
+        const response = await fetch(`/api/appointments/${appointmentId}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          form.reset({
+            title: data.title,
+            description: data.description || "",
+            startTime: new Date(data.startTime),
+            endTime: new Date(data.endTime),
+            status: data.status,
+            patientId: data.patientId,
+            caseId: data.caseId || "",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching appointment:", error);
+        toast.error("Failed to load appointment data");
+      } finally {
+        setLoadingData(false);
+      }
+    };
+
     if (open) {
       fetchPatientsAndCases();
       if (appointmentId) {
@@ -120,57 +163,14 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
         });
       }
     }
-  }, [open, appointmentId, defaultStartTime, defaultEndTime]);
-
-  const fetchPatientsAndCases = async () => {
-    try {
-      const [patientsRes, casesRes] = await Promise.all([
-        fetch("/api/patients"),
-        fetch("/api/cases"),
-      ]);
-
-      const patientsData = await patientsRes.json();
-      const casesData = await casesRes.json();
-
-      setPatients(patientsData);
-      setCases(casesData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Failed to load patients and cases");
-    }
-  };
-
-  const fetchAppointmentData = async () => {
-    setLoadingData(true);
-    try {
-      const response = await fetch(`/api/appointments/${appointmentId}`);
-      const data = await response.json();
-
-      if (response.ok) {
-        form.reset({
-          title: data.title,
-          description: data.description || "",
-          startTime: new Date(data.startTime),
-          endTime: new Date(data.endTime),
-          status: data.status,
-          patientId: data.patientId,
-          caseId: data.caseId || "",
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching appointment:", error);
-      toast.error("Failed to load appointment data");
-    } finally {
-      setLoadingData(false);
-    }
-  };
+  }, [open, appointmentId, defaultStartTime, defaultEndTime, form]);
 
   const checkOverlap = async (startTime: Date, endTime: Date, currentId?: string) => {
     try {
       const response = await fetch("/api/appointments");
       const appointments = await response.json();
 
-      const overlapping = appointments.filter((apt: any) => {
+      const overlapping = appointments.filter((apt: { id: string; startTime: string | Date; endTime: string | Date }) => {
         if (currentId && apt.id === currentId) return false; // Skip current appointment in edit mode
         
         const aptStart = new Date(apt.startTime);
@@ -259,7 +259,24 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent 
+          className="max-w-2xl max-h-[90vh] overflow-y-auto" 
+          onInteractOutside={(e) => {
+            // Prevent closing when clicking on MUI date picker popups
+            const target = e.target as HTMLElement;
+            const muiElements = [
+              '.MuiPickersPopper-root',
+              '.MuiPaper-root',
+              '.MuiDialog-root',
+              '.MuiPickersLayout-root',
+              '.MuiDateCalendar-root',
+              '.MuiMultiSectionDigitalClock-root'
+            ];
+            if (muiElements.some(selector => target.closest(selector))) {
+              e.preventDefault();
+            }
+          }}
+        >
           <DialogHeader>
             <DialogTitle>
               {isEditMode ? "Edit Appointment" : "Schedule New Appointment"}
@@ -389,6 +406,18 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                                   fullWidth: true,
                                   size: "small",
                                 },
+                                popper: {
+                                  placement: 'bottom-start',
+                                  disablePortal: false,
+                                  sx: {
+                                    zIndex: 10000,
+                                  },
+                                },
+                                desktopPaper: {
+                                  sx: {
+                                    zIndex: 10000,
+                                  },
+                                },
                               }}
                             />
                           </LocalizationProvider>
@@ -418,6 +447,18 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                                 textField: {
                                   fullWidth: true,
                                   size: "small",
+                                },
+                                popper: {
+                                  placement: 'bottom-start',
+                                  disablePortal: false,
+                                  sx: {
+                                    zIndex: 10000,
+                                  },
+                                },
+                                desktopPaper: {
+                                  sx: {
+                                    zIndex: 10000,
+                                  },
                                 },
                               }}
                             />

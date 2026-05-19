@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import moment from "moment";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -56,11 +56,7 @@ const AppointmentDetailPage = () => {
   const router = useRouter();
   const appointmentId = params?.id as string;
 
-  useEffect(() => {
-    fetchAppointmentData();
-  }, [appointmentId]);
-
-  const fetchAppointmentData = async () => {
+  const fetchAppointmentData = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/appointments/${appointmentId}`);
@@ -73,7 +69,11 @@ const AppointmentDetailPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [appointmentId]);
+
+  useEffect(() => {
+    fetchAppointmentData();
+  }, [fetchAppointmentData]);
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this appointment?")) {

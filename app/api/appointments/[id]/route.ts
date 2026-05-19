@@ -63,7 +63,16 @@ export async function PUT(
     const caseId = formData.get("caseId") as string | null;
     const recurrenceRule = formData.get("recurrenceRule") as string | null;
 
-    const updateData: any = {};
+    const updateData: {
+      title?: string;
+      description?: string;
+      startTime?: Date;
+      endTime?: Date;
+      status?: string;
+      patientId?: string;
+      caseId?: string;
+      recurrenceRule?: string;
+    } = {};
     if (title) updateData.title = title;
     if (description !== null) updateData.description = description || undefined;
     if (startTime) updateData.startTime = new Date(startTime);

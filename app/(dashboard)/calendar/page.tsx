@@ -216,7 +216,7 @@ const CalendarPage = () => {
             {/* View Tabs */}
             <Tabs
               value={activeView}
-              onValueChange={(value: any) => setActiveView(value)}
+              onValueChange={(value) => setActiveView(value as "month" | "week" | "day" | "list")}
               className="w-full"
             >
               <TabsList className="grid w-full max-w-md grid-cols-4 mb-6">
